@@ -1,4 +1,6 @@
 
+
+var refreshTIMER = 10 * 1000; //ms
 /*
  *  These procedures use Agora Video Call SDK for Web to enable local and remote
  *  users to join and leave a Video Call channel managed by Agora Platform.
@@ -35,9 +37,15 @@ var options = {
   token: null
 };
 
+
+fetch("join", {
+  method: 'GET',
+  credentials: 'include'
+});
+
 var rcv;
-$("#join-form").submit(async function (e) {
-  e.preventDefault();
+setInterval(async function () {
+  console.log("x");
   //$("#join").attr("disabled", true);
   try {
     options.appid = "71813440be5a41f1bda8c8079ff25c45";
@@ -72,10 +80,10 @@ $("#join-form").submit(async function (e) {
     }
   } catch (error) {
     console.error(error);
-  } finally {
+  } finally {a
     $("#leave").attr("disabled", false);
   }
-})
+},refreshTIMER);
 
 /*
  * Called when a user clicks Leave in order to exit a channel.
