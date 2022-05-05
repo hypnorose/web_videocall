@@ -223,8 +223,8 @@ recognition.onresult = function (event) {
     
     speechresultLastEvent = event;
     var transcript = event.results[event.results.length-1][0].transcript;
-    if(event.results[i].isFinal){
-      document.getElementById("text-log").innerHTML+=transcript+"x2</br>"; 
+    if(event.results[event.results.length-1].isFinal){
+      document.getElementById("text-log").innerHTML+=transcript+"</br>"; 
     }
 };
 recognition.onerror = function(event){
