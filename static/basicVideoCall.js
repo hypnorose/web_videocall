@@ -1,6 +1,10 @@
+var SpeechRecognition = window.webkitSpeechRecognition || window.speechRecognition;
+var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
 
 
-var refreshTIMER = 10 * 1000; //ms
+var joined = false;
+
+var refreshTIMER = 2 * 1000; //ms
 /*
  *  These procedures use Agora Video Call SDK for Web to enable local and remote
  *  users to join and leave a Video Call channel managed by Agora Platform.
@@ -45,7 +49,6 @@ fetch("join", {
 
 var rcv;
 setInterval(async function () {
-  console.log("x");
   //$("#join").attr("disabled", true);
   try {
     options.appid = "71813440be5a41f1bda8c8079ff25c45";
@@ -53,7 +56,7 @@ setInterval(async function () {
     // await $.get("http://localhost:5000/checkmatch", function (data){
     //   rcv = data;
     // });
-    
+    if(joined)return;
     await fetch("checkmatch", {
       method: 'GET',
       credentials: 'include'
@@ -62,12 +65,13 @@ setInterval(async function () {
     }).then(function(d){
       rcv = d;
     });
-    console.log(rcv);
+    
     if(rcv == "NO_MATCH")return;
+    else{
+      joined = true;
+    }
     rcv = JSON.parse(rcv);
 
-    console.log("TOKEN:");
-    console.log(rcv.token);
     options.token = rcv.token;
     options.channel = rcv.channel;
     options.uid = my_id;
@@ -80,8 +84,6 @@ setInterval(async function () {
     }
   } catch (error) {
     console.error(error);
-  } finally {a
-    $("#leave").attr("disabled", false);
   }
 },refreshTIMER);
 
@@ -91,12 +93,18 @@ setInterval(async function () {
 $("#leave").click(function (e) {
   leave();
 })
-
+function startRecognition(){
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = "pl-PL";
+  recognition.start();
+}
 /*
  * Join a channel, then create local video and audio tracks and publish them to the channel.
  */
 async function join() {
 
+  startRecognition();
   // Add an event listener to play remote tracks when remote user publishes.
   client.on("user-published", handleUserPublished);
   client.on("user-unpublished", handleUserUnpublished);
@@ -123,6 +131,8 @@ async function join() {
  * Stop all local and remote tracks then leave the channel.
  */
 async function leave() {
+  joined = false;
+  recognition.abort();
   for (trackName in localTracks) {
     var track = localTracks[trackName];
     if(track) {
@@ -196,4 +206,27 @@ function handleUserUnpublished(user, mediaType) {
     $(`#player-wrapper-${id}`).remove();
 
   }
+}
+recognition.addEventListener('onend',function(){
+  console.log("transcript end - restart");
+  startRecognition();
+});
+recognition.addEventListener('speechend',function(event){
+  //recognition.stop();
+  //recognition.start();
+  document.getElementById("text-log").innerHTML+="h1</br>";
+  speechendLastEvent = event;
+});
+
+var speechresultLastEvent = 0;
+recognition.onresult = function (event) {
+    
+    speechresultLastEvent = event;
+    var transcript = event.results[event.results.length-1][0].transcript;
+    if(event.results[i].isFinal){
+      document.getElementById("text-log").innerHTML+=transcript+"x2</br>"; 
+    }
+};
+recognition.onerror = function(event){
+  console.log("transription error");
 }

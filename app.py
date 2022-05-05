@@ -100,6 +100,9 @@ def checkMatch():
         "channel":logged_users[session['username']]['channel'],
         "token":getTokenForUser(session['username'],logged_users[session['username']]['channel'])
     })
+@app.route("/leavematch")
+def leaveMatch():
+    pass
 def getToken():
     return getTokenForUser(session['username'])
 if __name__ == "__main__":
