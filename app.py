@@ -8,7 +8,7 @@ import uuid
 from flask import jsonify
 from auth.RtcTokenBuilderSample import getTokenForUser
 app = Flask(__name__,template_folder='templates',static_folder="static")
-app.secret_key = "dupadupadupa"
+app.secret_key = "asd"
 pande_db.setup_db(app)
 mysql = MySQL(app)
 
