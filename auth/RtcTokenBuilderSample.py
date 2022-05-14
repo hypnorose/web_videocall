@@ -8,8 +8,9 @@ from random import randint
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from auth.RtcTokenBuilder import RtcTokenBuilder,Role_Attendee
 import uuid
-appID = "71813440be5a41f1bda8c8079ff25c45"
-appCertificate = "FILL_IT"
+import secret
+appID = secret.appID
+appCertificate = secret.appCert
 expireTimeInSeconds = 3600
 currentTimestamp = int(time.time())
 privilegeExpiredTs = currentTimestamp + expireTimeInSeconds

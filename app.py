@@ -38,16 +38,17 @@ def login():
             session["username"] = username;
             logged_users[username] = {}
             print(logged_users)
-            return "login succesfull "+getSessionAsStr() +"\n"; 
+            return redirect("/talk", code=302)
         else:
             return "bad password"
     else:
         return "no user with that login"
 @app.route("/logout",methods=['GET'])
 def logout():
-    del logged_users[session['username']]
-    session.clear()
-    return "logged off"
+    if 'username' in session:
+        del logged_users[session['username']]
+        session.clear()
+    return  redirect("/login_form", code=302)
 @app.route("/register",methods=['POST'])
 def register():
     username = request.form['username']
@@ -71,8 +72,10 @@ def join():
     return "joined"
 @app.route("/talk")
 def talk():
-    print(session['username'])
-    return render_template("call.html",userId = session['username'])
+    if 'username' in session:
+        return render_template("call.html",userId = session['username'])
+    else:
+        return render_template("login.html")
 @app.route("/checkmatch")
 def checkMatch():
     print(logged_users);

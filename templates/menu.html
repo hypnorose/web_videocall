@@ -1,0 +1,10 @@
+<div class="menu">
+    {% if userId %}
+    <a class="menu-element" href="/talk">talk</a>
+    <a class="menu-element" href="/logout">logout</a>
+    {% else %}
+    <a class="menu-element" href="/login_form">login</a>
+    <a class="menu-element" href="/register_form">register</a>
+  
+    {% endif %}
+</div>
